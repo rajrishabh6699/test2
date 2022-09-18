@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import CloseIcon from '../close-icon.svg';
+import CloseIcon from '../../images/close-icon.svg';
+import EmptyIcon from '../../images/curriculum.svg'
 
 export const AuthToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNxdWFyZWJvYXRAZ21haWwuY29tIiwibmFtZSI6IlJlY3J1aXRlciIsInNraWxscyI6InB5dGhvbiIsInVzZXJSb2xlIjowLCJjcmVhdGVkQXQiOiIyMDIxLTEyLTIyVDEwOjUxOjEzLjAwMFoiLCJ1cGRhdGVkQXQiOiIyMDIxLTEyLTIyVDExOjEwOjAyLjAwMFoiLCJpZCI6IjFmMmEzNjYxLTFjM2QtNGIwZi04ZWM0LTE5ZjUzM2ZiOTBmMiIsImlhdCI6MTY0NTQzOTg3M30.xKo_bIJKoCbYDRdcrMKEBv0_Qjt9q2kFqwSBcMK0Jwo';
@@ -32,8 +33,6 @@ const JobModal = ({ modalState, setModalState }) => {
       getJobCandidates(modalState.jobId).then(data => setCandidatesData(data));
     }
   }, [modalState.jobId]);
-
-  console.log(candidatesData);
   return (
     <>
       <div style={{ width: '100%', height: '80px' }}>
@@ -42,10 +41,11 @@ const JobModal = ({ modalState, setModalState }) => {
             display: 'flex',
             justifyContent: 'space-betweeen',
             width: '100%',
-            borderBottom: '1px solid  gray'
+            borderBottom: '1px solid  gray',
+            margin:'0 0  11px 0'
           }}
         >
-          <p style={{ width: '100%', height: '15px' }}>Applicants for this job</p>
+          <p style={{ width: '100%', height: '15px' ,fontFamily:'Helvetica Neue, Medium',fontSize:'24px',paddingBottom:'35px',fontWeight:'500'}}>Applicants for this job</p>
           <img
             style={{ cursor: 'pointer', height: '15px' }}
             src={CloseIcon}
@@ -55,7 +55,7 @@ const JobModal = ({ modalState, setModalState }) => {
             }}
           />
         </div>
-        <p>Total {candidatesData?.length} application</p>
+        <p style={{width: '100%', height: '15px' ,fontFamily:'Helvetica Neue, Normal',fontSize:'16px'}}>Total {candidatesData?.length??0} application</p>
       </div>
       <div
         style={{
@@ -65,10 +65,10 @@ const JobModal = ({ modalState, setModalState }) => {
           background: '#EEEFF2',
           borderRadius: '10px',
           overflow: 'auto',
-          justifyContent: 'flex-start'
+          height: 'calc(100% - 80px)'
         }}
       >
-        {candidatesData?.map(candidate => (
+        {candidatesData ? candidatesData.map(candidate => (
           <div
             style={{
               display: 'flex',
@@ -86,9 +86,15 @@ const JobModal = ({ modalState, setModalState }) => {
             <div
               style={{
                 display: 'flex',
-                width: '100%',
-                height: '50px',
-                margin: '0 0 25px 0'
+                flexDirection: 'column',
+                padding: '14px',
+                border: '1px solid #303F6080',
+                borderRadius: '5px',
+                width: '46%',
+                margin: '12px',
+                background: 'white',
+                height: '179px',
+                boxSizing: 'border-box'
               }}
             >
               <div
@@ -128,7 +134,22 @@ const JobModal = ({ modalState, setModalState }) => {
               {candidate.skills}
             </p>
           </div>
-        ))}
+        )) : 
+        <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%'
+        }}
+      >
+        <img src={EmptyIcon} />
+        <p style={{ margin: '20px 0 0 0', color: '#303F60' }}>
+          No applications available.
+        </p>
+      </div>
+        }
       </div>
     </>
   );

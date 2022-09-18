@@ -1,9 +1,7 @@
 import { Switch, Route } from 'react-router-dom';
-import LoginPage from './components/LoginPage';
+import LoginPage from './pages/LoginPage';
 import JobDetailsPage from './pages/JobDetailsPage';
-import Candidate from './components/Candidate';
-import Modal from './components/Modal';
-import Homepage from './pages/HomaPage';
+import Homepage from './pages/HomePage';
 
 function App() {
   return (

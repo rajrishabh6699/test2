@@ -20,15 +20,20 @@
   }
   
   .Auth-form-title {
-    text-align: center;
+    text-align: left;
     margin-bottom: 1em;
-    font-size: 24px;
-    color: rgb(34, 34, 34);
-    font-weight: 800;
+    font-size: 18px;
+    color: #303F60;
+    font-family:'Helvetica Neue';
+    font-weight:600;
+
   }
   
   label {
-    font-size: 14px;
-    font-weight: 600;
-    color: rgb(34, 34, 34);
+    /* font-size: 14px; */
+    font-weight: 350;
+    color: #303F60;
+    /* font-family:  'Helvetica Neue'; */
+   font:' normal normal normal 10px Helvetica Neue';
+
   }
