@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
-import Header from "../../components/Header";
-import JobCard from "../../components/jobCard";
-import { getJobs } from "./jobDetailsPage.utils";
-import { customStyles } from "./jobDetailsPage.constants";
-import HomeIcon from "./home-icon.svg";
+import React, { useState, useEffect } from 'react';
+import Modal from 'react-modal';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Header from '../../components/Header';
+import JobCard from '../../components/jobCard';
+import { getJobs } from './jobDetailsPage.utils';
+import { customStyles } from './jobDetailsPage.constants';
+import HomeIcon from './home-icon.svg';
 import EmptyIcon from '../../images/writing.svg';
-import JobModal from "../../components/jobModal";
-import classes from "./DetailsPage.module.css";
+import PreviousIcon from '../../images/prev.svg';
+import NextIcon from '../../images/next.svg';
+import JobModal from '../../components/jobModal';
+import classes from './DetailsPage.module.css';
 
-const JobDetailsPage = () => {
+let isLoggedIn = false;
+
+const JobDetailsPage = ({ setAuthToken, authToken }) => {
   const [modalState, setModalState] = useState({
     show: false,
-    jobId: null,
+    jobId: null
   });
   const [jobsData, setJobsData] = useState(null);
   const [pageCount, setPageCount] = useState(1);
@@ -20,32 +26,48 @@ const JobDetailsPage = () => {
   const closeModal = () =>
     setModalState({
       show: false,
-      jobId: null,
+      jobId: null
     });
 
   useEffect(() => {
-    getJobs(pageCount).then((data) => setJobsData(data));
-  }, [pageCount]);
+    if (authToken) {
+      getJobs(authToken, pageCount).then(data => setJobsData(data));
+    }
+  }, [pageCount, authToken]);
+
+  const Msg = () => (
+    <div>
+      <h2>Login</h2>
+      <p> You have successfull logged in. </p>
+    </div>
+  );
+
+  const notify = () => toast(<Msg />);
+
+  console.log(isLoggedIn);
+
+  useEffect(() => {
+    if (authToken && !isLoggedIn) {
+      notify();
+      isLoggedIn = true;
+    }
+  }, [authToken, isLoggedIn]);
 
   return (
     <>
       <div className={classes.container}>
-        <Header />
-        <div style={{ borderTop: "1px solid white", margin: "22px 0 0 0" }}>
+        <Header authToken={authToken} setAuthToken={setAuthToken} />
+        <div style={{ borderTop: '1px solid white', margin: '22px 0 0 0' }}>
           <div className={classes.main}>
-            <img src={HomeIcon} height="15px"></img>
-            <p
-              style={{ color: "white", fontSize: "15px", margin: "0 0 0 8px" }}
-            >
-              Home
-            </p>
+            <img src={HomeIcon} height="15px" alt="home-icon"></img>
+            <p style={{ color: 'white', fontSize: '15px', margin: '0 0 0 8px' }}>Home</p>
           </div>
           <p
             style={{
-              color: "white",
-              margin: "24px 0 -20px 60px",
-              fontSize: "22px",
-              paddingTop:'40px'
+              color: 'white',
+              margin: '24px 0 -20px 60px',
+              fontSize: '22px',
+              paddingTop: '40px'
             }}
           >
             Jobs posted by You
@@ -56,12 +78,8 @@ const JobDetailsPage = () => {
       <div className={classes.box}>
         <div className={classes.innerBox}>
           {jobsData ? (
-            jobsData.map((job) => (
-              <JobCard
-                jobData={job}
-                key={job.id}
-                setModalState={setModalState}
-              />
+            jobsData.map(job => (
+              <JobCard jobData={job} key={job.id} setModalState={setModalState} />
             ))
           ) : (
             <div
@@ -75,7 +93,7 @@ const JobDetailsPage = () => {
                 margin: '0 150px 0 0'
               }}
             >
-              <img src={EmptyIcon} />
+              <img src={EmptyIcon} alt="img-icon" />
               <p style={{ margin: '20px 0 0 0', color: '#303F60' }}>
                 Your posted jobs will show here.
               </p>
@@ -96,29 +114,39 @@ const JobDetailsPage = () => {
           )}
         </div>
         <div
-          style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            margin: '0 0 80px 0'
+          }}
         >
-          <p
+          <img
+            src={PreviousIcon}
             style={{
-              cursor: pageCount == 1 ? "not-allowed" : "pointer",
-              border: "solid black",
-              borderWidth: "3px 3px 3px 3px",
-              display: "inline-block",
-              padding: "3px",
+              cursor: pageCount === 1 ? 'not-allowed' : 'pointer'
             }}
             onClick={() => pageCount >= 2 && setPageCount(pageCount - 1)}
-          >Previous</p>
-          <p style={{ margin: "0 12px" }}>{pageCount}</p>
+          />
           <p
-            style={{ cursor: "pointer" ,
-            border: "solid black",
-            borderWidth: "3px 3px 3px 3px",
-            display: "inline-block",
-            padding: "3px",}}
-            onClick={() => setPageCount(pageCount + 1)}
+            style={{
+              background: '#43AFFF33',
+              color: 'black',
+              height: '30px',
+              width: '30px',
+              margin: '0 12px',
+              padding: '2px 0 0 9px'
+            }}
           >
-            Next
+            {pageCount}
           </p>
+          <img
+            src={NextIcon}
+            style={{
+              cursor: 'pointer'
+            }}
+            onClick={() => setPageCount(pageCount + 1)}
+          />
         </div>
       </div>
 
@@ -129,9 +157,14 @@ const JobDetailsPage = () => {
           style={customStyles}
           contentLabel="Example Modal"
         >
-          <JobModal modalState={modalState} setModalState={setModalState} />
+          <JobModal
+            modalState={modalState}
+            setModalState={setModalState}
+            authToken={authToken}
+          />
         </Modal>
       )}
+      <ToastContainer hideProgressBar={true} />
     </>
   );
 };

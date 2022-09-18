@@ -1,13 +1,12 @@
 import axios from 'axios';
-import { AuthToken } from './jobDetailsPage.constants';
 
-export const getJobs = async pageCount => {
+export const getJobs = async (authToken, pageCount) => {
   try {
     const {
       data: { data, success }
     } = await axios.get(`https://jobs-api.squareboat.info/api/v1/recruiters/jobs`, {
       headers: {
-        Authorization: AuthToken
+        Authorization: authToken
       },
       params: {
         page: pageCount
